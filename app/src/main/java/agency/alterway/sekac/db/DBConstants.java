@@ -18,10 +18,6 @@ public interface DBConstants
     String DATABASE_NAME = "sekac.db";
     int DATABASE_VERSION = 1;
 
-//    String DAY_CUTS = "day_cuts";
-//    String DAY_DATE = "day_date";
-//    String DAY_VOLUME = "day_volume";
-
 //    String TABLE_DAYS_DATA = "table_days_data";
     String TABLE_PINE_TREE = "table_pine_tree";
     String TABLE_TREE_CUTS = "table_tree_cuts";

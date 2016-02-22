@@ -8,11 +8,10 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import agency.alterway.sekac.models.Cut;
-import agency.alterway.sekac.models.DayData;
+import agency.alterway.sekac.models.Summary;
 
 /**
  * Manager to handle all database actions
@@ -38,32 +37,6 @@ public class DatabaseManager implements DBConstants
         }
     }
 
-//    private void createDayData(Date selectedDate, Cut cut) throws
-//                                                               SQLException
-//    {
-//        ContentValues values = new ContentValues();
-//
-//        values.put(DAY_DATE, formatter.format(selectedDate));
-//
-//        if (cut != null)
-//        {
-//            values.put(DAY_VOLUME, cut.getVolume());
-//            values.put(DAY_CUTS, 1);
-//        }
-//        else
-//        {
-//            values.put(DAY_VOLUME, 0);
-//            values.put(DAY_CUTS, 0);
-//        }
-//
-//        database.insert(TABLE_DAYS_DATA, null, values);
-//    }
-
-    private boolean deleteAllTreeCuts() throws SQLException
-    {
-        return database.delete(TABLE_TREE_CUTS, null, null) == 1;
-    }
-
     public static DatabaseManager getInstance(Context paramContext)
     {
         if (instance == null)
@@ -82,70 +55,17 @@ public class DatabaseManager implements DBConstants
         database = ddl.getWritableDatabase();
     }
 
-    private void updateDayData(Date date, Cut cut, DayData dayData) throws SQLException
-    {
-        ContentValues values = new ContentValues();
-
-        values.put("day_cuts", dayData.getNoOfCuts() + 1);
-        values.put("day_volume", dayData.getVolume() + cut.getVolume());
-
-        database.update("table_days_data", values, "day_date = ?", new String[] { formatter.format(date) });
-    }
-
     public long addTreeCut(Cut cut) throws SQLException, ParseException
     {
-//        DayData localDayData = getDayData(selectedDate);
-
-//        if (localDayData == null)
-//        {
-//            deleteAllTreeCuts();
-//            createDayData(selectedDate, cut);
-//        }
-
         ContentValues values = new ContentValues();
 
         values.put("cut_width", cut.getWidth());
         values.put("cut_height", cut.getHeight());
         values.put("cut_volume", cut.getVolume());
 
-//        updateDayData(selectedDate, cut, localDayData);
 
         return database.insert(TABLE_TREE_CUTS, null, values);
     }
-
-    public DayData getDayData(Date date) throws SQLException,ParseException
-    {
-        DayData dayData = null;
-
-        Cursor cursor = database.query(true, "table_days_data", null, "day_date = ?", new String[] { formatter.format(date) }, null, null, null, null);
-
-        if (cursor.moveToFirst())
-        {
-            dayData = new DayData(formatter.parse(cursor.getString(0)), cursor.getInt(1), cursor.getInt(2));
-
-            cursor.close();
-        }
-        return dayData;
-    }
-
-//    public List<DayData> getDayDatasForMonth(MonthData monthData) throws SQLException,ParseException
-//    {
-//        List<DayData> days = new ArrayList<>();
-//
-//        Cursor cursor = database.rawQuery("SELECT * FROM "+ TABLE_DAYS_DATA +" WHERE STRFTIME('%m',"+ DAY_DATE +") = ? AND STRFTIME('%Y',"+ DAY_DATE +") = ?", new String[] { String.valueOf(monthData.getMonthCode() + 1), String.valueOf(monthData.getYearCode()) });
-//
-//        if(cursor.moveToFirst())
-//        {
-//            do
-//            {
-//                days.add(new DayData(formatter.parse(cursor.getString(0)),cursor.getInt(1),cursor.getInt(2)));
-//            } while(cursor.moveToNext());
-//
-//            cursor.close();
-//        }
-//
-//        return days;
-//    }
 
     public int getPineVolume(int width, int height) throws SQLException
     {
@@ -181,44 +101,38 @@ public class DatabaseManager implements DBConstants
         return treeCuts;
     }
 
+    public Summary getDaySummary()
+    {
+        Summary daySummary = new Summary();
+
+        Cursor cursor = database.query(true, TABLE_TREE_CUTS, null, null, null, null, null, null, null);
+            daySummary.setNoOfCuts(cursor.getCount());
+        cursor.close();
+
+        cursor = database.rawQuery("SELECT SUM("+CUT_HEIGHT+") FROM "+TABLE_TREE_CUTS, null);
+
+            daySummary.setTotalHeight(cursor.getInt(0));
+        cursor.close();
+
+        cursor = database.rawQuery("SELECT SUM("+CUT_WIDTH+") FROM "+TABLE_TREE_CUTS, null);
+            daySummary.setTotalWidth(cursor.getInt(0));
+        cursor.close();
+
+        cursor = database.rawQuery("SELECT SUM("+CUT_VOLUME+") FROM "+TABLE_TREE_CUTS, null);
+            daySummary.setTotalWidth(cursor.getInt(0));
+        cursor.close();
+
+        return daySummary;
+    }
+
     public boolean removeCut(Cut cut)
     {
         return database.delete(TABLE_TREE_CUTS, CUT_ID+" = ?",new String[]{String.valueOf(cut.getId())}) == 1;
     }
 
-//    public List<MonthData> getWorkingMonths() throws SQLException,ParseException
-//    {
-//        List<MonthData> months = new ArrayList<>();
-//
-//        Cursor cursor = database.query(true, TABLE_DAYS_DATA, new String[] { DAY_DATE }, null, null, null, null, null, null);
-//
-//        if (cursor.moveToFirst())
-//        {
-//            String monthName = "";
-//
-//            do
-//            {
-//                Date monthDate = formatter.parse(cursor.getString(0));
-//
-//                Calendar monthCalendar = Calendar.getInstance();
-//                monthCalendar.setTime(monthDate);
-//
-//                if (!monthName.equals(monthFormatter.format(monthDate)))
-//                {
-//                    int monthCode = monthCalendar.get(Calendar.MONTH);
-//                    int yearCode = monthCalendar.get(Calendar.YEAR);
-//
-//                    monthName = monthFormatter.format(monthDate);
-//
-//                    months.add(new MonthData(monthCode, yearCode, monthName));
-//                }
-//
-//            } while (cursor.moveToNext());
-//
-//            cursor.close();
-//        }
-//
-//        return months;
-//    }
+    public boolean removeAllCuts() throws SQLException
+    {
+        return database.delete(TABLE_TREE_CUTS, null, null) == 1;
+    }
 }
 

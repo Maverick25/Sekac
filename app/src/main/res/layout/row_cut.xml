@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:text="@string/height_default"
             android:gravity="bottom"
-            android:textSize="25sp"
+            android:textSize="@dimen/text_value_size"
             android:paddingBottom="@dimen/activity_horizontal_margin"/>
 
         <TextView
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:text="@string/width_default"
-            android:textSize="25sp"
+            android:textSize="@dimen/text_value_size"
             android:gravity="bottom"
             android:paddingBottom="@dimen/activity_horizontal_margin" />
 
@@ -96,7 +96,7 @@
             android:layout_height="match_parent"
             android:text="@string/volume_default"
             android:textStyle="bold"
-            android:textSize="25sp"
+            android:textSize="@dimen/text_value_size"
             android:gravity="bottom"
             android:paddingBottom="@dimen/activity_horizontal_margin" android:id="@+id/text_volumeValue"
             android:layout_alignParentTop="true" android:layout_toLeftOf="@+id/text_volumeLabel"

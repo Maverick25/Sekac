@@ -1,13 +1,17 @@
-package agency.alterway.sekac;
+package agency.alterway.sekac.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.EditText;
 
 import java.util.List;
 
+import agency.alterway.sekac.R;
 import agency.alterway.sekac.db.DatabaseManager;
 import agency.alterway.sekac.models.Cut;
 import agency.alterway.sekac.views.adapters.CutAdapter;
@@ -74,5 +78,25 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_summary:
+                Intent goToSummary = new Intent(this, SummaryActivity.class);
+                startActivity(goToSummary);
+                return true;
+            default:
+                return false;
+        }
+    }
 }

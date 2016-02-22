@@ -1,15 +1,19 @@
 <resources>
     <string name="app_name">Sekac</string>
 
+    <string name="count">počet</string>
     <string name="height">dĺžka</string>
     <string name="width">šírka</string>
     <string name="volume_ov">kubíkov</string>
     <string name="volume_ky">kubíky</string>
-    <string name="equals">=</string>
     <string name="add">Pridaj</string>
+    <string name="share_progress">Zdieľať postup</string>
+    <string name="finish_day">Ukončiť deň</string>
+    <string name="summary_of_day">Sumár dňa</string>
 
     <string name="height_default">15</string>
     <string name="width_default">25</string>
     <string name="volume_default">69</string>
+    <string name="date_default">22. Február 2016</string>
 
 </resources>
