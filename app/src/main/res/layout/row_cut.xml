@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/cutRow_height">
+
+    <ImageButton
+        android:id="@+id/imgButton_remove"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:contentDescription="@string/app_name"
+        android:background="@null"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_gravity="center_vertical"/>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="3">
+
+        <TextView
+            android:id="@+id/text_heightValue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/height_default"
+            android:gravity="bottom"
+            android:textSize="25sp"
+            android:paddingBottom="@dimen/activity_horizontal_margin"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/height"
+            android:gravity="bottom"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="18dp"
+            android:id="@+id/text_heightLabel"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/text_heightValue"
+            android:layout_toEndOf="@+id/text_heightValue"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_weight="3" >
+
+        <TextView
+            android:id="@+id/text_widthValue"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/width_default"
+            android:textSize="25sp"
+            android:gravity="bottom"
+            android:paddingBottom="@dimen/activity_horizontal_margin" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/width"
+            android:gravity="bottom"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="18dp"
+            android:layout_alignParentTop="true" android:layout_toRightOf="@+id/text_widthValue"
+            android:layout_toEndOf="@+id/text_widthValue" android:id="@+id/text_widthLabel"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:paddingRight="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/volume_ov"
+            android:gravity="bottom"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="18dp"
+            android:layout_alignParentTop="true" android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" android:id="@+id/text_volumeLabel"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/volume_default"
+            android:textStyle="bold"
+            android:textSize="25sp"
+            android:gravity="bottom"
+            android:paddingBottom="@dimen/activity_horizontal_margin" android:id="@+id/text_volumeValue"
+            android:layout_alignParentTop="true" android:layout_toLeftOf="@+id/text_volumeLabel"
+            android:layout_toStartOf="@+id/text_volumeLabel"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
