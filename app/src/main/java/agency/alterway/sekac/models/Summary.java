@@ -8,28 +8,14 @@ package agency.alterway.sekac.models;
 public class Summary
 {
     private int noOfCuts;
-    private int totalHeight;
-    private int totalWidth;
     private int totalVolume;
+    private double totalMatter;
 
     public Summary() {}
 
-    public Summary(int noOfCuts, int totalHeight, int totalWidth, int totalVolume)
+    public String getFormattedMatter()
     {
-        this.noOfCuts = noOfCuts;
-        this.totalHeight = totalHeight;
-        this.totalWidth = totalWidth;
-        this.totalVolume = totalVolume;
-    }
-
-    public String getFormattedHeight()
-    {
-        return String.valueOf(totalHeight);
-    }
-
-    public String getFormattedWidth()
-    {
-        return String.valueOf(totalWidth);
+        return String.valueOf(totalMatter);
     }
 
     public String getFormattedVolume()
@@ -42,43 +28,37 @@ public class Summary
         return noOfCuts+" stromov";
     }
 
-    public int getNoOfCuts()
+    private void initiateMatter(int value, ParameterType type)
     {
-        return noOfCuts;
+        try
+        {
+            switch (type)
+            {
+                case NO_OF_CUTS:
+                    this.totalMatter = this.totalVolume / value;
+                    break;
+                case VOLUME:
+                    this.totalMatter = value / this.noOfCuts;
+                    break;
+            }
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void setNoOfCuts(int noOfCuts)
     {
+        initiateMatter(noOfCuts, ParameterType.NO_OF_CUTS);
+
         this.noOfCuts = noOfCuts;
-    }
-
-    public int getTotalHeight()
-    {
-        return totalHeight;
-    }
-
-    public void setTotalHeight(int totalHeight)
-    {
-        this.totalHeight = totalHeight;
-    }
-
-    public int getTotalWidth()
-    {
-        return totalWidth;
-    }
-
-    public void setTotalWidth(int totalWidth)
-    {
-        this.totalWidth = totalWidth;
-    }
-
-    public int getTotalVolume()
-    {
-        return totalVolume;
     }
 
     public void setTotalVolume(int totalVolume)
     {
+        initiateMatter(totalVolume, ParameterType.VOLUME);
+
         this.totalVolume = totalVolume;
     }
 }

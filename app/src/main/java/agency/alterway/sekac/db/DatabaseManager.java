@@ -20,6 +20,8 @@ import agency.alterway.sekac.models.Summary;
  */
 public class DatabaseManager implements DBConstants
 {
+    private static String TAG = DatabaseManager.class.getName();
+
     private static SQLiteDatabase  database;
     private static DDLEstablisher  ddl;
     private static DatabaseManager instance;
@@ -109,17 +111,8 @@ public class DatabaseManager implements DBConstants
             daySummary.setNoOfCuts(cursor.getCount());
         cursor.close();
 
-        cursor = database.rawQuery("SELECT SUM("+CUT_HEIGHT+") FROM "+TABLE_TREE_CUTS, null);
-
-            daySummary.setTotalHeight(cursor.getInt(0));
-        cursor.close();
-
-        cursor = database.rawQuery("SELECT SUM("+CUT_WIDTH+") FROM "+TABLE_TREE_CUTS, null);
-            daySummary.setTotalWidth(cursor.getInt(0));
-        cursor.close();
-
         cursor = database.rawQuery("SELECT SUM("+CUT_VOLUME+") FROM "+TABLE_TREE_CUTS, null);
-            daySummary.setTotalWidth(cursor.getInt(0));
+            daySummary.setTotalVolume(cursor.getInt(0));
         cursor.close();
 
         return daySummary;

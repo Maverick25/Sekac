@@ -21,10 +21,8 @@ public class SummaryActivity extends AppCompatActivity
     Button   dateChangeButton;
     @Bind(R.id.text_totalCount)
     TextView totalCountLabel;
-    @Bind(R.id.text_totalHeight)
-    TextView totalHeightLabel;
-    @Bind(R.id.text_totalWidth)
-    TextView totalWidthLabel;
+    @Bind(R.id.text_totalMatter)
+    TextView totalMatterLabel;
     @Bind(R.id.text_totalVolume)
     TextView totalVolumeLabel;
 
@@ -35,14 +33,16 @@ public class SummaryActivity extends AppCompatActivity
         setContentView(R.layout.activity_summary);
         ButterKnife.bind(this);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd. MMMM yyyy", Locale.getDefault());
 
         dateChangeButton.setText(formatter.format(new Date()));
         totalCountLabel.setText(summary.getFormattedNoOfCuts());
-        totalHeightLabel.setText(summary.getFormattedHeight());
-        totalWidthLabel.setText(summary.getFormattedWidth());
+        // TODO matter
+        totalMatterLabel.setText(summary.getFormattedMatter());
         totalVolumeLabel.setText(summary.getFormattedVolume());
     }
 }

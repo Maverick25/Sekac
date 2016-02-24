@@ -16,7 +16,7 @@ public interface DBConstants
     String CUT_WIDTH = "cut_width";
 
     String DATABASE_NAME = "sekac.db";
-    int DATABASE_VERSION = 1;
+    int DATABASE_VERSION = 2;
 
 //    String TABLE_DAYS_DATA = "table_days_data";
     String TABLE_PINE_TREE = "table_pine_tree";

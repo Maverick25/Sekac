@@ -46,7 +46,10 @@ public class MainActivity extends AppCompatActivity
         adapter = new CutAdapter(cutList);
         recordsRecycler.setAdapter(adapter);
 
-        recordsRecycler.smoothScrollToPosition(cutList.size()-1);
+        if (cutList.size() > 0)
+        {
+            recordsRecycler.smoothScrollToPosition(cutList.size()-1);
+        }
     }
 
     @OnClick(R.id.button_addCut)

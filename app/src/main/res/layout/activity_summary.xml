@@ -52,29 +52,10 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="@string/height"/>
+            android:text="@string/matter"/>
 
         <TextView
-            android:id="@+id/text_totalHeight"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/volume_default"
-            android:gravity="center"
-            android:textSize="@dimen/text_value_size"/>
-
-        <TextView
-            android:layout_width="match_parent"
-            android:gravity="center"
-            android:paddingLeft="@dimen/activity_vertical_margin"
-            android:paddingRight="@dimen/activity_vertical_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="@string/width"/>
-
-        <TextView
-            android:id="@+id/text_totalWidth"
+            android:id="@+id/text_totalMatter"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
