@@ -108,11 +108,17 @@ public class DatabaseManager implements DBConstants
         Summary daySummary = new Summary();
 
         Cursor cursor = database.query(true, TABLE_TREE_CUTS, null, null, null, null, null, null, null);
+        if(cursor.moveToFirst())
+        {
             daySummary.setNoOfCuts(cursor.getCount());
+        }
         cursor.close();
 
         cursor = database.rawQuery("SELECT SUM("+CUT_VOLUME+") FROM "+TABLE_TREE_CUTS, null);
+        if(cursor.moveToFirst())
+        {
             daySummary.setTotalVolume(cursor.getInt(0));
+        }
         cursor.close();
 
         return daySummary;

@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.menu_summary:
                 Intent goToSummary = new Intent(this, SummaryActivity.class);
                 startActivity(goToSummary);
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
                 return true;
             default:
                 return false;

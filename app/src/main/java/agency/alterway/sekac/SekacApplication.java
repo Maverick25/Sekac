@@ -4,12 +4,13 @@ import android.app.Application;
 import android.content.Context;
 
 /**
+ * Application class to provide context for non-Android classes
+ *
  * Created by marekrigan on 22/02/16.
  */
 public class SekacApplication extends Application
 {
     private static SekacApplication instance;
-    private static Context             context;
 
     @Override
     public void onCreate()

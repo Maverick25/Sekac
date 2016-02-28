@@ -2,6 +2,7 @@ package agency.alterway.sekac.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -33,7 +34,16 @@ public class SummaryActivity extends AppCompatActivity
         setContentView(R.layout.activity_summary);
         ButterKnife.bind(this);
 
-        getSupportActionBar().setHomeButtonEnabled(true);
+        try
+        {
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeButtonEnabled(true);
+        }
+        catch (NullPointerException e)
+        {
+            e.printStackTrace();
+        }
 
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
@@ -41,8 +51,22 @@ public class SummaryActivity extends AppCompatActivity
 
         dateChangeButton.setText(formatter.format(new Date()));
         totalCountLabel.setText(summary.getFormattedNoOfCuts());
-        // TODO matter
+        // FIXME matter
         totalMatterLabel.setText(summary.getFormattedMatter());
         totalVolumeLabel.setText(summary.getFormattedVolume());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                return true;
+            default:
+                return false;
+        }
     }
 }
