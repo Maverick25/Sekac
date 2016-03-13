@@ -26,8 +26,8 @@ public class DDLEstablisher extends SQLiteOpenHelper implements DBConstants
 
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion)
     {
-        database.execSQL("DROP TABLE IF EXISTS" +TABLE_TREE_CUTS);
-        database.execSQL("DROP TABLE IF EXISTS" +TABLE_PINE_TREE);
+        database.execSQL("DROP TABLE IF EXISTS " +TABLE_TREE_CUTS);
+        database.execSQL("DROP TABLE IF EXISTS " +TABLE_PINE_TREE);
         onCreate(database);
     }
 

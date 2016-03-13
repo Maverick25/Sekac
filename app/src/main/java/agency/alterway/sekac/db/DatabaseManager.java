@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -79,6 +80,11 @@ public class DatabaseManager implements DBConstants
         {
             volume = cursor.getInt(0);
             cursor.close();
+        }
+
+        if (volume == -1)
+        {
+            throw new SQLiteException();
         }
 
         return volume;

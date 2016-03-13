@@ -1,6 +1,7 @@
 package agency.alterway.sekac.activities;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -73,6 +75,10 @@ public class MainActivity extends AppCompatActivity
             widthField.setText("");
 
             recordsRecycler.smoothScrollToPosition(cutList.size()-1);
+        }
+        catch (SQLiteException e)
+        {
+            Toast.makeText(this, "Chyba", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
         {

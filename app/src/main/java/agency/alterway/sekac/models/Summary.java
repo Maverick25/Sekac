@@ -1,5 +1,7 @@
 package agency.alterway.sekac.models;
 
+import java.text.DecimalFormat;
+
 /**
  * Model object representing cut data of the whole day
  *
@@ -15,7 +17,8 @@ public class Summary
 
     public String getFormattedMatter()
     {
-        return String.valueOf(totalMatter);
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(totalMatter);
     }
 
     public String getFormattedVolume()
@@ -25,7 +28,22 @@ public class Summary
 
     public String getFormattedNoOfCuts()
     {
-        return noOfCuts+" stromov";
+        String formatted = noOfCuts+" ";
+
+        switch (noOfCuts)
+        {
+            case 1:
+                formatted = formatted.concat("strom");
+                break;
+            case 2:
+            case 3:
+            case 4:
+                formatted = formatted.concat("stromy");
+                break;
+            default:
+                formatted = formatted.concat("stromov");
+        }
+        return formatted;
     }
 
     private void initiateMatter(int value, ParameterType type)
@@ -35,14 +53,14 @@ public class Summary
             switch (type)
             {
                 case NO_OF_CUTS:
-                    this.totalMatter = this.totalVolume / value;
+                    this.totalMatter =(double) this.totalVolume / value;
                     break;
                 case VOLUME:
-                    this.totalMatter = value / this.noOfCuts;
+                    this.totalMatter = (double)value / this.noOfCuts;
                     break;
             }
         }
-        catch (NullPointerException e)
+        catch (NullPointerException | ArithmeticException e)
         {
             e.printStackTrace();
         }
