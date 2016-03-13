@@ -5,18 +5,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
+import java.util.List;
 
 import agency.alterway.sekac.R;
+import agency.alterway.sekac.controllers.FileController;
 import agency.alterway.sekac.db.DatabaseManager;
+import agency.alterway.sekac.injections.Injection;
+import agency.alterway.sekac.models.Cut;
 import agency.alterway.sekac.models.Summary;
+import agency.alterway.sekac.utils.DateHandler;
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class SummaryActivity extends AppCompatActivity
+public class SummaryActivity extends AppCompatActivity implements Injection
 {
     @Bind(R.id.button_dateChange)
     Button   dateChangeButton;
@@ -47,9 +52,7 @@ public class SummaryActivity extends AppCompatActivity
 
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd. MMMM yyyy", Locale.getDefault());
-
-        dateChangeButton.setText(formatter.format(new Date()));
+        dateChangeButton.setText(DateHandler.formatter.format(new Date()));
         totalCountLabel.setText(summary.getFormattedNoOfCuts());
         totalMatterLabel.setText(summary.getFormattedMatter());
         totalVolumeLabel.setText(summary.getFormattedVolume());
@@ -67,5 +70,21 @@ public class SummaryActivity extends AppCompatActivity
             default:
                 return false;
         }
+    }
+
+    @OnClick(R.id.button_shareProgress)
+    void onSharedProgress()
+    {
+        List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
+        Summary summary = DatabaseManager.getInstance(this).getDaySummary();
+
+        String response = FileController.getInstance(this).exportToCSV(new Date(),treeCuts, summary);
+        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConvertedDatabase()
+    {
+
     }
 }

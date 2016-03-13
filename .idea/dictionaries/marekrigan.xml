@@ -2,11 +2,21 @@
   <dictionary name="marekrigan">
     <words>
       <w>chyba</w>
+      <w>dĺžka</w>
       <w>establisher</w>
+      <w>formatters</w>
+      <w>hmota</w>
+      <w>kubíky</w>
       <w>mmmm</w>
+      <w>poznamky</w>
+      <w>počet</w>
+      <w>sekac</w>
+      <w>spolu</w>
       <w>strom</w>
       <w>stromov</w>
       <w>stromy</w>
+      <w>číslo</w>
+      <w>šírka</w>
     </words>
   </dictionary>
 </component>

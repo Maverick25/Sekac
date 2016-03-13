@@ -101,7 +101,7 @@
             android:text="@string/finish_day"/>
 
         <Button
-            android:id="@+id/share_progress"
+            android:id="@+id/button_shareProgress"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
