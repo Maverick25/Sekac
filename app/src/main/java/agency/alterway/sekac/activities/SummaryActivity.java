@@ -51,7 +51,6 @@ public class SummaryActivity extends AppCompatActivity
 
         dateChangeButton.setText(formatter.format(new Date()));
         totalCountLabel.setText(summary.getFormattedNoOfCuts());
-        // FIXME matter
         totalMatterLabel.setText(summary.getFormattedMatter());
         totalVolumeLabel.setText(summary.getFormattedVolume());
     }
