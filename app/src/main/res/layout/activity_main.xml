@@ -8,12 +8,26 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_previousRecords"
+    <ViewSwitcher
+        android:id="@+id/switcher_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="5dp"
-        android:layout_above="@+id/linear_bottom"/>
+        android:layout_above="@+id/linear_bottom">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_previousRecords"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/colorSecondaryText"
+            android:text="@string/no_notes"/>
+
+    </ViewSwitcher>
 
     <LinearLayout
         android:id="@+id/linear_bottom"

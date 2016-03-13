@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import java.util.List;
 
@@ -21,11 +22,16 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity implements CutAdapter.ActivityCallback
 {
+    private static final int NOTE_SCREEN = 0;
+    private static final int EMPTY_LABEL = 1;
+
     private List<Cut> cutList;
     private CutAdapter adapter;
 
+    @Bind(R.id.switcher_main)
+    ViewSwitcher switcher;
     @Bind(R.id.field_addHeight)
     EditText heightField;
     @Bind(R.id.field_addWidth)
@@ -45,12 +51,23 @@ public class MainActivity extends AppCompatActivity
         recordsRecycler.setLayoutManager(layoutManager);
 
         cutList = DatabaseManager.getInstance(this).getTreeCuts();
-        adapter = new CutAdapter(cutList);
+        adapter = new CutAdapter(this, cutList);
         recordsRecycler.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
         if (cutList.size() > 0)
         {
-            recordsRecycler.smoothScrollToPosition(cutList.size()-1);
+            recordsRecycler.scrollToPosition(cutList.size()-1);
+            switcher.setDisplayedChild(NOTE_SCREEN);
+        }
+        else
+        {
+            switcher.setDisplayedChild(EMPTY_LABEL);
         }
     }
 
@@ -74,7 +91,8 @@ public class MainActivity extends AppCompatActivity
             heightField.setText("");
             widthField.setText("");
 
-            recordsRecycler.smoothScrollToPosition(cutList.size()-1);
+            recordsRecycler.scrollToPosition(cutList.size()-1);
+            switcher.setDisplayedChild(NOTE_SCREEN);
         }
         catch (SQLiteException e)
         {
@@ -85,6 +103,15 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onRemovedCut(boolean isEmpty)
+    {
+        if (isEmpty)
+        {
+            switcher.setDisplayedChild(EMPTY_LABEL);
+        }
     }
 
     @Override

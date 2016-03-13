@@ -16,5 +16,6 @@
     <string name="width_default">25</string>
     <string name="volume_default">69</string>
     <string name="date_default">22. Február 2016</string>
+    <string name="no_notes">Žiadne poznámky</string>
 
 </resources>

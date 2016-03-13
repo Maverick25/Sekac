@@ -22,9 +22,11 @@ import agency.alterway.sekac.models.Cut;
 public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder>
 {
     private List<Cut> cutList;
+    private ActivityCallback callback;
 
-    public CutAdapter(List<Cut> cutList)
+    public CutAdapter(ActivityCallback callback, List<Cut> cutList)
     {
+        this.callback = callback;
         this.cutList = cutList;
     }
 
@@ -48,6 +50,7 @@ public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder>
                 DatabaseManager.getInstance(SekacApplication.getAppContext()).removeCut(cut);
                 cutList.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
+                callback.onRemovedCut(cutList.isEmpty());
             }
         });
 
@@ -79,5 +82,10 @@ public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder>
             volume = (TextView) itemView.findViewById(R.id.text_volumeValue);
         }
 
+    }
+
+    public interface ActivityCallback
+    {
+        void onRemovedCut(boolean isEmpty);
     }
 }
