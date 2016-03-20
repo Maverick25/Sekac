@@ -6,5 +6,5 @@ package agency.alterway.sekac.injections;
 public interface Injection
 {
 
-    void onConvertedDatabase();
+    void onUploadedSheet(String message);
 }

@@ -78,13 +78,12 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
-        String response = FileController.getInstance(this).exportToCSV(new Date(),treeCuts, summary);
-        Toast.makeText(this, response, Toast.LENGTH_SHORT).show();
+        FileController.getInstance(this).exportToCSV(new Date(),treeCuts, summary);
     }
 
     @Override
-    public void onConvertedDatabase()
+    public void onUploadedSheet(String message)
     {
-
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }

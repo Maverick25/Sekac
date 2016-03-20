@@ -1,5 +1,6 @@
 package agency.alterway.sekac.controllers;
 
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
@@ -58,32 +59,13 @@ public class FileController
         return instance;
     }
 
-    private void uploadToDropbox(String filename)
-    {
-        // Upload "test.txt" to Dropbox
-        try
-        {
-            // Get current account info
-            FullAccount account = client.users().getCurrentAccount();
-            System.out.println(account.getName().getDisplayName());
-
-            InputStream in = new FileInputStream(filename);
-            client.files().uploadBuilder("/"+filename).uploadAndFinish(in);
-        }
-        catch (DbxException | IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public String exportToCSV(Date selectedDate, List<Cut> treeCuts, Summary summary)
+    public void exportToCSV(Date selectedDate, List<Cut> treeCuts, Summary summary)
     {
         File exportDir = new File(Environment.getExternalStorageDirectory(), "sekac_poznamky");
 
-        boolean folderCreated = true;
         if (!exportDir.exists() && !exportDir.mkdirs())
         {
-            return "Súbor nie je dostupný";
+            injection.onUploadedSheet("Súbor nie je dostupný");
         }
 
         try
@@ -134,16 +116,57 @@ public class FileController
 
                 writer.close();
 
-            uploadToDropbox(filename);
-
-            return "Súbor bol úspešne vytvorený";
+            DropboxUploader uploader = new DropboxUploader();
+            uploader.execute(file.getAbsolutePath());
         }
         catch (Exception sqlEx)
         {
+            sqlEx.printStackTrace();
             Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-            return "Niekde sa stala chyba";
+            injection.onUploadedSheet("Niekde sa stala chyba");
         }
     }
 
+
+    private class DropboxUploader extends AsyncTask<String, Void, Boolean>
+    {
+        @Override
+        protected Boolean doInBackground(String... params)
+        {
+            // Upload "test.txt" to Dropbox
+            try
+            {
+                String filename = params[0];
+
+                // Get current account info
+                FullAccount account = client.users().getCurrentAccount();
+                System.out.println(account.getName().getDisplayName());
+
+                InputStream in = new FileInputStream(filename);
+                client.files().uploadBuilder(filename).uploadAndFinish(in);
+
+                return true;
+            }
+            catch (DbxException | IOException e)
+            {
+                e.printStackTrace();
+
+                return false;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(Boolean success)
+        {
+            if(success)
+            {
+                injection.onUploadedSheet("Súbor bol úspešne vytvorený");
+            }
+            else
+            {
+                injection.onUploadedSheet("Chyba nastala pri uložení do Dropboxu");
+            }
+        }
+    }
 
 }
