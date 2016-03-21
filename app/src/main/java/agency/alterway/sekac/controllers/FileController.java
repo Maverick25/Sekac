@@ -7,6 +7,7 @@ import android.util.Log;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.DeleteErrorException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -133,7 +134,14 @@ public class FileController
                 String filename = params[0];
                 String path = params[1];
 
-                client.files().delete("/"+filename);
+                try
+                {
+                    client.files().delete("/" + filename);
+                }
+                catch (DeleteErrorException e)
+                {
+                    e.printStackTrace();
+                }
 
                 InputStream in = new FileInputStream(path);
                 client.files().uploadBuilder("/"+filename).uploadAndFinish(in);

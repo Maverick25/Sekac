@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -113,7 +114,15 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
-        FileController.getInstance(this).exportToCSV(new Date(),treeCuts, summary);
+        try
+        {
+            Date selectedDate = DateHandler.formatter.parse(dateChangeButton.getText().toString());
+            FileController.getInstance(this).exportToCSV(selectedDate,treeCuts, summary);
+        }
+        catch (ParseException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.button_finishDay)
