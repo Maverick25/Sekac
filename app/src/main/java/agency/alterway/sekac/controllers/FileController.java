@@ -59,13 +59,13 @@ public class FileController
         return instance;
     }
 
-    public void exportToCSV(Date selectedDate, List<Cut> treeCuts, Summary summary)
+    public void exportToCSV(boolean isFinishingDay, Date selectedDate, List<Cut> treeCuts, Summary summary)
     {
         File exportDir = new File(Environment.getExternalStorageDirectory(), "sekac_poznamky");
 
         if (!exportDir.exists() && !exportDir.mkdirs())
         {
-            injection.onUploadedSheet("Súbor nie je dostupný");
+            injection.onUploadedSheet(false, "Súbor nie je dostupný", isFinishingDay);
         }
 
         try
@@ -111,20 +111,27 @@ public class FileController
 
             writer.close();
 
-            DropboxUploader uploader = new DropboxUploader();
+            DropboxUploader uploader = new DropboxUploader(isFinishingDay);
             uploader.execute(filename, file.getAbsolutePath());
         }
         catch (Exception sqlEx)
         {
             sqlEx.printStackTrace();
             Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-            injection.onUploadedSheet("Niekde sa stala chyba");
+            injection.onUploadedSheet(false, "Niekde sa stala chyba",isFinishingDay);
         }
     }
 
 
     private class DropboxUploader extends AsyncTask<String, Void, Boolean>
     {
+        private boolean isFinishingDay;
+
+        public DropboxUploader(boolean isFinishingDay)
+        {
+            this.isFinishingDay = isFinishingDay;
+        }
+
         @Override
         protected Boolean doInBackground(String... params)
         {
@@ -161,11 +168,11 @@ public class FileController
         {
             if(success)
             {
-                injection.onUploadedSheet("Súbor bol úspešne vytvorený");
+                injection.onUploadedSheet(true, "Súbor bol úspešne vytvorený", isFinishingDay);
             }
             else
             {
-                injection.onUploadedSheet("Chyba nastala pri uložení do Dropboxu");
+                injection.onUploadedSheet(false, "Chyba nastala pri uložení do Dropboxu", isFinishingDay);
             }
         }
     }

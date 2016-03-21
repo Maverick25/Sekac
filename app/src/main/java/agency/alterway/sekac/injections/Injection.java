@@ -6,5 +6,5 @@ package agency.alterway.sekac.injections;
 public interface Injection
 {
 
-    void onUploadedSheet(String message);
+    void onUploadedSheet(boolean success, String message, boolean isFinishingDay);
 }

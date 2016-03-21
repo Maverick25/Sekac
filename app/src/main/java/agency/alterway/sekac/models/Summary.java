@@ -17,8 +17,15 @@ public class Summary
 
     public String getFormattedMatter()
     {
-        DecimalFormat df = new DecimalFormat("#.00");
-        return df.format(totalMatter);
+        if(Double.isNaN(totalMatter))
+        {
+            return "0";
+        }
+        else
+        {
+            DecimalFormat df = new DecimalFormat("#.00");
+            return df.format(totalMatter);
+        }
     }
 
     public String getFormattedVolume()

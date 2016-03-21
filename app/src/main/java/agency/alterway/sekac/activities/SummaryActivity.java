@@ -1,8 +1,10 @@
 package agency.alterway.sekac.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -106,18 +108,63 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         progressDialog.show();
     }
 
-    @OnClick(R.id.button_shareProgress)
-    void onSharedProgress()
+    private void showFinishDialog()
     {
-        showProgress();
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.sure_to_finish_day)
+                .setCancelable(true)
+                .setPositiveButton(R.string.finish_day, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
 
+                        showProgress();
+
+                        shareProgress(true);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create();
+
+        dialog.show();
+    }
+
+    private void showNewDayDialog()
+    {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setMessage(R.string.hooray_to_a_new_day)
+                .setCancelable(true)
+                .setNeutralButton(R.string.das_ist_hruza, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        onBackPressed();
+                    }
+                })
+                .create();
+
+        dialog.show();
+    }
+
+    private void shareProgress(boolean isFinishingDay)
+    {
         List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
         try
         {
             Date selectedDate = DateHandler.formatter.parse(dateChangeButton.getText().toString());
-            FileController.getInstance(this).exportToCSV(selectedDate,treeCuts, summary);
+            FileController.getInstance(this).exportToCSV(isFinishingDay, selectedDate,treeCuts, summary);
         }
         catch (ParseException e)
         {
@@ -125,10 +172,18 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         }
     }
 
+    @OnClick(R.id.button_shareProgress)
+    void onSharedProgress()
+    {
+        showProgress();
+
+        shareProgress(false);
+    }
+
     @OnClick(R.id.button_finishDay)
     void onFinishedDay()
     {
-
+        showFinishDialog();
     }
 
     @OnClick(R.id.button_dateChange)
@@ -141,14 +196,28 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     }
 
     @Override
-    public void onUploadedSheet(String message)
+    public void onUploadedSheet(boolean success, String message, boolean isFinishingDay)
     {
         if(progressDialog!= null && progressDialog.isShowing())
         {
             progressDialog.dismiss();
         }
 
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        if (success)
+        {
+            if (isFinishingDay && DatabaseManager.getInstance(this).removeAllCuts())
+            {
+                showNewDayDialog();
+            }
+            else
+            {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+            }
+        }
+        else
+        {
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        }
     }
 
 }

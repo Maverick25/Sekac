@@ -137,7 +137,7 @@ public class DatabaseManager implements DBConstants
 
     public boolean removeAllCuts() throws SQLException
     {
-        return database.delete(TABLE_TREE_CUTS, null, null) == 1;
+        return database.delete(TABLE_TREE_CUTS, null, null) != 0;
     }
 }
 
