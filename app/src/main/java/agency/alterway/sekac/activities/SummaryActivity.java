@@ -1,5 +1,7 @@
 package agency.alterway.sekac.activities;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -32,6 +34,8 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     @Bind(R.id.text_totalVolume)
     TextView totalVolumeLabel;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -59,31 +63,83 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if(resultCode == RESULT_OK && requestCode == getResources().getInteger(R.integer.calendar_request_code))
+        {
+            String dateString = data.getStringExtra(getString(R.string.key_current_date));
+
+            dateChangeButton.setText(dateString);
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
         {
             case android.R.id.home:
-                finish();
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+                onBackPressed();
                 return true;
             default:
                 return false;
         }
     }
 
+    private void showProgress()
+    {
+        // Show modal progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle(getString(R.string.saving_progress_title));
+        progressDialog.setMessage(getString(R.string.saving_progress_message));
+        progressDialog.setCancelable(false);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.show();
+    }
+
     @OnClick(R.id.button_shareProgress)
     void onSharedProgress()
     {
+        showProgress();
+
         List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
         FileController.getInstance(this).exportToCSV(new Date(),treeCuts, summary);
     }
 
+    @OnClick(R.id.button_finishDay)
+    void onFinishedDay()
+    {
+
+    }
+
+    @OnClick(R.id.button_dateChange)
+    void onChangeDate(Button button)
+    {
+        Intent goToDatePicker = new Intent(this, CalendarActivity.class);
+        goToDatePicker.putExtra(getString(R.string.key_current_date), button.getText());
+        startActivityForResult(goToDatePicker, getResources().getInteger(R.integer.calendar_request_code));
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+    }
+
     @Override
     public void onUploadedSheet(String message)
     {
+        if(progressDialog!= null && progressDialog.isShowing())
+        {
+            progressDialog.dismiss();
+        }
+
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
+
 }

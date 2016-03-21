@@ -7,7 +7,6 @@ import android.util.Log;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.users.FullAccount;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,51 +72,46 @@ public class FileController
             String filename = "sekac_" + DateHandler.fileFormatter.format(selectedDate) + ".csv";
             File file = new File(exportDir.getAbsolutePath()+"/"+filename);
 
-            if (file.exists())
-            {
-                file.delete();
-            }
+            CSVWriter writer = new CSVWriter(new FileWriter(file));
 
-                CSVWriter writer = new CSVWriter(new FileWriter(file));
-
-                List<String[]> data = new ArrayList<>();
-                data.add(new String[]{DateHandler.formatter.format(selectedDate)});
+            List<String[]> data = new ArrayList<>();
+            data.add(new String[]{DateHandler.formatter.format(selectedDate)});
 
 //                data.add(new String[]{"Číslo","Dĺžka","Šírka","Kubíky"});
-                data.add(new String[]{"Cislo","Dlzka","Sirka","Kubiky"});
+            data.add(new String[]{"Cislo","Dlzka","Sirka","Kubiky"});
 
 
-                for (int i=1; i<= treeCuts.size(); i++)
-                {
-                    int j = i-1;
-                    data.add(new String[]
-                            {
-                                    String.valueOf(i),
-                                    treeCuts.get(j).getFormattedHeight(),
-                                    treeCuts.get(j).getFormattedWidth(),
-                                    treeCuts.get(j).getFormattedVolume()
-                            });
-                }
-
-                data.add(new String[]{});
-
+            for (int i=1; i<= treeCuts.size(); i++)
+            {
+                int j = i-1;
                 data.add(new String[]
                         {
+                                String.valueOf(i),
+                                treeCuts.get(j).getFormattedHeight(),
+                                treeCuts.get(j).getFormattedWidth(),
+                                treeCuts.get(j).getFormattedVolume()
+                        });
+            }
+
+            data.add(new String[]{});
+
+            data.add(new String[]
+                    {
 //                                "", "Počet", "Spolu Kubíky","Spolu Hmota"
-                                "", "Pocet", "Spolu Kubiky","Spolu Hmota"
-                        });
+                            "", "Pocet", "Kubiky","Hmota"
+                    });
 
-                data.add(new String[]
-                        {
-                                "", summary.getFormattedNoOfCuts(), summary.getFormattedVolume(), summary.getFormattedMatter()
-                        });
+            data.add(new String[]
+                    {
+                            "", summary.getFormattedNoOfCuts(), summary.getFormattedVolume(), summary.getFormattedMatter()
+                    });
 
-                writer.writeAll(data);
+            writer.writeAll(data);
 
-                writer.close();
+            writer.close();
 
             DropboxUploader uploader = new DropboxUploader();
-            uploader.execute(file.getAbsolutePath());
+            uploader.execute(filename, file.getAbsolutePath());
         }
         catch (Exception sqlEx)
         {
@@ -137,13 +131,12 @@ public class FileController
             try
             {
                 String filename = params[0];
+                String path = params[1];
 
-                // Get current account info
-                FullAccount account = client.users().getCurrentAccount();
-                System.out.println(account.getName().getDisplayName());
+                client.files().delete("/"+filename);
 
-                InputStream in = new FileInputStream(filename);
-                client.files().uploadBuilder(filename).uploadAndFinish(in);
+                InputStream in = new FileInputStream(path);
+                client.files().uploadBuilder("/"+filename).uploadAndFinish(in);
 
                 return true;
             }

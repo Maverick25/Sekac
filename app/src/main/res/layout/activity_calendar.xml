@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".activities.CalendarActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save_date"
+        android:id="@+id/button_saveDate"
+        android:layout_gravity="end"
+        android:layout_alignTop="@+id/button_cancel"
+        android:layout_below="@+id/datePicker_summary"
+        android:layout_toEndOf="@+id/button_cancel"
+        android:background="@color/colorAccent"
+        android:textColor="@color/white"
+        android:layout_toRightOf="@+id/button_cancel"
+        android:layout_alignRight="@+id/datePicker_summary"
+        android:layout_alignEnd="@+id/datePicker_summary"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel"
+        android:id="@+id/button_cancel"
+        android:layout_gravity="start"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:layout_below="@+id/datePicker_summary"
+        android:layout_alignLeft="@+id/datePicker_summary"
+        android:layout_alignStart="@+id/datePicker_summary"/>
+
+    <DatePicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/datePicker_summary"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
