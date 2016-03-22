@@ -31,7 +31,7 @@ import au.com.bytecode.opencsv.CSVWriter;
  */
 public class FileController
 {
-    private static final String ACCESS_TOKEN = "Hbm6EwWgYu4AAAAAAAAL8rfitsCPW1mvQzJ1FbovWRN_RE0HWfrCgN-Hnp7H1mZ5";
+    private static final String ACCESS_TOKEN = "fNc4d-V-YqAAAAAAAAAAB4G47WrBk1u949MIGUZa1cYpuRMz3zfqHkJ1qGhn3S4H";
     private static FileController instance;
     private static Injection injection;
     private DbxClientV2 client;
@@ -145,7 +145,7 @@ public class FileController
                 {
                     client.files().delete("/" + filename);
                 }
-                catch (DeleteErrorException e)
+                catch (DeleteErrorException | NoSuchMethodError e)
                 {
                     e.printStackTrace();
                 }
