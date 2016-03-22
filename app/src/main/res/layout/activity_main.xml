@@ -44,6 +44,8 @@
             android:hint="@string/height"
             android:gravity="center"
             android:inputType="number"
+            android:imeOptions="actionNext"
+            android:nextFocusRight="@+id/field_addWidth"
             android:maxLines="1"
             android:layout_marginTop="5dp"/>
 
@@ -54,6 +56,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:inputType="number"
+            android:imeOptions="actionDone"
+            android:nextFocusLeft="@+id/field_addHeight"
             android:hint="@string/width"
             android:maxLines="1"
 

@@ -21,9 +21,10 @@
     <string name="save_date">Ulož Dátum</string>
     <string name="key_current_date">key_current_date</string>
     <string name="saving_progress_title">Uschovávam postup</string>
-    <string name="saving_progress_message">Uschovávam postup... Čakajte prosím</string>
+    <string name="saving_progress_message">Uschovávam postup… Čakajte prosím</string>
     <string name="sure_to_finish_day">Ukončením dňa sa vymažú všetky poznámky z aplikácie a vytvorí sa CSV súbor na telefóne a aj na Dropboxe. Ste si istý?</string>
     <string name="hooray_to_a_new_day">Deň bol úspešne ukončený. A teraz hurá do nového dňa!</string>
     <string name="das_ist_hruza">Das Ist Hrúza!</string>
+    <string name="volume">objem</string>
 
 </resources>

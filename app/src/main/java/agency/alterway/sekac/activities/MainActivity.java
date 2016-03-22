@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -24,7 +27,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements CutAdapter.ActivityCallback
+public class MainActivity extends AppCompatActivity implements CutAdapter.ActivityCallback, TextView.OnEditorActionListener
 {
     private static final int NOTE_SCREEN = 0;
     private static final int EMPTY_LABEL = 1;
@@ -47,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements CutAdapter.Activi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        widthField.setOnEditorActionListener(this);
 
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -104,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements CutAdapter.Activi
         }
         catch (SQLiteException e)
         {
+            e.printStackTrace();
             Toast.makeText(this, "Chyba", Toast.LENGTH_SHORT).show();
         }
         catch (Exception e)
@@ -120,6 +126,13 @@ public class MainActivity extends AppCompatActivity implements CutAdapter.Activi
         {
             switcher.setDisplayedChild(EMPTY_LABEL);
         }
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        DatabaseManager.close();
+        super.onDestroy();
     }
 
     @Override
@@ -146,5 +159,18 @@ public class MainActivity extends AppCompatActivity implements CutAdapter.Activi
             default:
                 return false;
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+    {
+        switch(actionId)
+        {
+            case EditorInfo.IME_ACTION_DONE:
+                addCut();
+                heightField.requestFocus();
+                return true;
+        }
+        return false;
     }
 }

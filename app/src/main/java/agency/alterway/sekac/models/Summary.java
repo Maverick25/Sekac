@@ -1,5 +1,7 @@
 package agency.alterway.sekac.models;
 
+import android.support.annotation.Nullable;
+
 import java.text.DecimalFormat;
 
 /**
@@ -10,7 +12,7 @@ import java.text.DecimalFormat;
 public class Summary
 {
     private int noOfCuts;
-    private int totalVolume;
+    private double totalVolume;
     private double totalMatter;
 
     public Summary() {}
@@ -30,7 +32,8 @@ public class Summary
 
     public String getFormattedVolume()
     {
-        return String.valueOf(totalVolume);
+        DecimalFormat df = new DecimalFormat("#.00");
+        return df.format(totalVolume);
     }
 
     public String getFormattedNoOfCuts()
@@ -53,18 +56,21 @@ public class Summary
         return formatted;
     }
 
-    private void initiateMatter(int value, ParameterType type)
+    private void initiateMatter(@Nullable Integer noOfCuts, @Nullable Double volume)
     {
         try
         {
-            switch (type)
+            if(noOfCuts == null)
             {
-                case NO_OF_CUTS:
-                    this.totalMatter =(double) this.totalVolume / value;
-                    break;
-                case VOLUME:
-                    this.totalMatter = (double)value / this.noOfCuts;
-                    break;
+                this.totalMatter = volume / this.noOfCuts;
+            }
+            else if (volume == null)
+            {
+                this.totalMatter = this.totalVolume / noOfCuts;
+            }
+            else
+            {
+                throw new NullPointerException();
             }
         }
         catch (NullPointerException | ArithmeticException e)
@@ -75,16 +81,18 @@ public class Summary
 
     public void setNoOfCuts(int noOfCuts)
     {
-        initiateMatter(noOfCuts, ParameterType.NO_OF_CUTS);
+        initiateMatter(noOfCuts, null);
 
         this.noOfCuts = noOfCuts;
     }
 
     public void setTotalVolume(int totalVolume)
     {
-        initiateMatter(totalVolume, ParameterType.VOLUME);
+        double realVolume = (double) totalVolume/100;
 
-        this.totalVolume = totalVolume;
+        initiateMatter(null, realVolume);
+
+        this.totalVolume = realVolume;
     }
 }
 
