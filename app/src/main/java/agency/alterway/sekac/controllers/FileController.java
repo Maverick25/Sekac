@@ -9,8 +9,16 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.DeleteErrorException;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +30,7 @@ import agency.alterway.sekac.injections.Injection;
 import agency.alterway.sekac.models.Cut;
 import agency.alterway.sekac.models.Summary;
 import agency.alterway.sekac.utils.DateHandler;
+import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 /**
@@ -59,7 +68,34 @@ public class FileController
         return instance;
     }
 
-    public void exportToCSV(boolean isFinishingDay, Date selectedDate, List<Cut> treeCuts, Summary summary)
+    private File convertToXLS(String filename, String path, File exportDir) throws IOException
+    {
+        Workbook wb = new HSSFWorkbook();
+        CreationHelper helper = wb.getCreationHelper();
+        Sheet sheet = wb.createSheet("Sekáč Tabuľka");
+
+        CSVReader reader = new CSVReader(new FileReader(path));
+
+        String[] line;
+        int r = 0;
+        while ((line = reader.readNext()) != null) {
+            Row row = sheet.createRow((short) r++);
+
+            for (int i = 0; i < line.length; i++)
+                row.createCell(i)
+                        .setCellValue(helper.createRichTextString(line[i]));
+        }
+
+        // Write the output to a file
+        File excelFile = new File(exportDir, filename+".xls");
+        FileOutputStream fileOut = new FileOutputStream(excelFile);
+        wb.write(fileOut);
+        fileOut.close();
+
+        return excelFile;
+    }
+
+    public void exportToDisk(boolean isFinishingDay, Date selectedDate, List<Cut> treeCuts, Summary summary)
     {
         File exportDir = new File(Environment.getExternalStorageDirectory(), "sekac_poznamky");
 
@@ -70,8 +106,8 @@ public class FileController
 
         try
         {
-            String filename = "sekac_" + DateHandler.fileFormatter.format(selectedDate) + ".csv";
-            File file = new File(exportDir.getAbsolutePath()+"/"+filename);
+            String filename = "sekac_" + DateHandler.fileFormatter.format(selectedDate);
+            File file = new File(exportDir.getAbsolutePath()+"/"+filename + ".csv");
 
             CSVWriter writer = new CSVWriter(new FileWriter(file));
 
@@ -111,8 +147,10 @@ public class FileController
 
             writer.close();
 
+            File excelFile = convertToXLS(filename, file.getAbsolutePath(), exportDir);
+
             DropboxUploader uploader = new DropboxUploader(isFinishingDay);
-            uploader.execute(filename, file.getAbsolutePath());
+            uploader.execute(excelFile);
         }
         catch (Exception sqlEx)
         {
@@ -123,7 +161,7 @@ public class FileController
     }
 
 
-    private class DropboxUploader extends AsyncTask<String, Void, Boolean>
+    private class DropboxUploader extends AsyncTask<File, Void, Boolean>
     {
         private boolean isFinishingDay;
 
@@ -133,25 +171,23 @@ public class FileController
         }
 
         @Override
-        protected Boolean doInBackground(String... params)
+        protected Boolean doInBackground(File... params)
         {
-            // Upload "test.txt" to Dropbox
             try
             {
-                String filename = params[0];
-                String path = params[1];
+                File excelFile = params[0];
 
                 try
                 {
-                    client.files().delete("/" + filename);
+                    client.files().delete("/" + excelFile.getName());
                 }
                 catch (DeleteErrorException | NoSuchMethodError e)
                 {
                     e.printStackTrace();
                 }
 
-                InputStream in = new FileInputStream(path);
-                client.files().uploadBuilder("/"+filename).uploadAndFinish(in);
+                InputStream in = new FileInputStream(excelFile.getAbsolutePath());
+                client.files().uploadBuilder("/"+excelFile.getName()).uploadAndFinish(in);
 
                 return true;
             }
@@ -172,7 +208,7 @@ public class FileController
             }
             else
             {
-                injection.onUploadedSheet(false, "Chyba nastala pri uložení do Dropboxu", isFinishingDay);
+                injection.onUploadedSheet(false, "Súbor bol úspešne vytvorený na telefóne ale chyba nastala pri uložení do Dropboxu", isFinishingDay);
             }
         }
     }

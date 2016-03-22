@@ -164,7 +164,7 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         try
         {
             Date selectedDate = DateHandler.formatter.parse(dateChangeButton.getText().toString());
-            FileController.getInstance(this).exportToCSV(isFinishingDay, selectedDate,treeCuts, summary);
+            FileController.getInstance(this).exportToDisk(isFinishingDay, selectedDate,treeCuts, summary);
         }
         catch (ParseException e)
         {

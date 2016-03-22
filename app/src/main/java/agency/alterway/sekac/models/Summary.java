@@ -25,14 +25,14 @@ public class Summary
         }
         else
         {
-            DecimalFormat df = new DecimalFormat("#.00");
+            DecimalFormat df = new DecimalFormat("0.00");
             return df.format(totalMatter);
         }
     }
 
     public String getFormattedVolume()
     {
-        DecimalFormat df = new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("0.00");
         return df.format(totalVolume);
     }
 
