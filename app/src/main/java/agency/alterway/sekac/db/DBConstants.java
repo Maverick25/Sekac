@@ -1,15 +1,11 @@
 package agency.alterway.sekac.db;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 /**
  * Interface for helping DDL
- *
+ * <p>
  * Created by marekrigan on 22/02/16.
  */
-public interface DBConstants
-{
+public interface DBConstants {
     String CUT_HEIGHT = "cut_height";
     String CUT_ID = "cut_id";
     String CUT_VOLUME = "cut_volume";
@@ -18,7 +14,7 @@ public interface DBConstants
     String DATABASE_NAME = "sekac.db";
     int DATABASE_VERSION = 2;
 
-//    String TABLE_DAYS_DATA = "table_days_data";
+    //    String TABLE_DAYS_DATA = "table_days_data";
     String TABLE_PINE_TREE = "table_pine_tree";
     String TABLE_TREE_CUTS = "table_tree_cuts";
 
@@ -59,11 +55,8 @@ public interface DBConstants
     String WIDTH43 = "WIDTH43";
     String WIDTH44 = "WIDTH44";
 
-    SimpleDateFormat formatter      = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-    SimpleDateFormat monthFormatter = new SimpleDateFormat("MMM yyyy", Locale.getDefault());
-
-    String CREATE_TABLE_PINE_TREE = "CREATE TABLE "+ TABLE_PINE_TREE +"("+
-            HEIGHT +" INTEGER NOT NULL," +
+    String CREATE_TABLE_PINE_TREE = "CREATE TABLE " + TABLE_PINE_TREE + "(" +
+            HEIGHT + " INTEGER NOT NULL," +
             WIDTH10 + " INTEGER NOT NULL," +
             WIDTH11 + " INTEGER NOT NULL," +
             WIDTH12 + " INTEGER NOT NULL," +
@@ -105,7 +98,7 @@ public interface DBConstants
 //            DAY_VOLUME + " INTEGER NOT NULL," +
 //            DAY_CUTS + " INTEGER NOT NULL)";
 
-    String CREATE_TABLE_TREE_CUTS = "CREATE TABLE "+ TABLE_TREE_CUTS +"(" +
+    String CREATE_TABLE_TREE_CUTS = "CREATE TABLE " + TABLE_TREE_CUTS + "(" +
             CUT_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
             CUT_WIDTH + " INTEGER NOT NULL," +
             CUT_HEIGHT + " INTEGER NOT NULL," +

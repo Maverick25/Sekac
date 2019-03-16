@@ -7,7 +7,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,50 +15,39 @@ import agency.alterway.sekac.models.Summary;
 
 /**
  * Manager to handle all database actions
- *
+ * <p>
  * Created by marekrigan on 22/02/16.
  */
-public class DatabaseManager implements DBConstants
-{
-    private static String TAG = DatabaseManager.class.getName();
-
-    private static SQLiteDatabase  database;
-    private static DDLEstablisher  ddl;
+public class DatabaseManager implements DBConstants {
+    private static SQLiteDatabase database;
+    private static DDLEstablisher ddl;
     private static DatabaseManager instance;
 
-    private DatabaseManager(Context context)
-    {
+    private DatabaseManager(Context context) {
         ddl = new DDLEstablisher(context);
     }
 
-    public static void close()
-    {
-        if (ddl != null)
-        {
+    public static void close() {
+        if (ddl != null) {
             ddl.close();
         }
     }
 
-    public static DatabaseManager getInstance(Context paramContext)
-    {
-        if (instance == null)
-        {
+    public static DatabaseManager getInstance(Context paramContext) {
+        if (instance == null) {
             instance = new DatabaseManager(paramContext);
         }
-        if ((database == null) || (!database.isOpen()))
-        {
+        if ((database == null) || (!database.isOpen())) {
             open();
         }
         return instance;
     }
 
-    private static void open() throws SQLException
-    {
+    private static void open() throws SQLException {
         database = ddl.getWritableDatabase();
     }
 
-    public long addTreeCut(Cut cut) throws SQLException, ParseException
-    {
+    public long addTreeCut(Cut cut) throws SQLException {
         ContentValues values = new ContentValues();
 
         values.put("cut_width", cut.getWidth());
@@ -70,37 +58,31 @@ public class DatabaseManager implements DBConstants
         return database.insert(TABLE_TREE_CUTS, null, values);
     }
 
-    public int getPineVolume(int width, int height) throws SQLException
-    {
+    public int getPineVolume(int width, int height) throws SQLException {
         int volume = -1;
 
-        Cursor cursor = database.query(true, TABLE_PINE_TREE, new String[] { "WIDTH" + width }, HEIGHT+" = ?", new String[] { String.valueOf(height) }, null, null, null, null);
+        Cursor cursor = database.query(true, TABLE_PINE_TREE, new String[]{"WIDTH" + width}, HEIGHT + " = ?", new String[]{String.valueOf(height)}, null, null, null, null);
 
-        if (cursor.moveToFirst())
-        {
+        if (cursor.moveToFirst()) {
             volume = cursor.getInt(0);
             cursor.close();
         }
 
-        if (volume == -1)
-        {
+        if (volume == -1) {
             throw new SQLiteException();
         }
 
         return volume;
     }
 
-    public List<Cut> getTreeCuts() throws SQLException
-    {
+    public List<Cut> getTreeCuts() throws SQLException {
         List<Cut> treeCuts = new ArrayList<>();
 
         Cursor cursor = database.query(true, TABLE_TREE_CUTS, null, null, null, null, null, null, null);
 
-        if (cursor.moveToFirst())
-        {
-            do
-            {
-                treeCuts.add(new Cut(cursor.getLong(0), cursor.getInt(1),  cursor.getInt(2), cursor.getInt(3)));
+        if (cursor.moveToFirst()) {
+            do {
+                treeCuts.add(new Cut(cursor.getLong(0), cursor.getInt(1), cursor.getInt(2), cursor.getInt(3)));
             } while (cursor.moveToNext());
 
             cursor.close();
@@ -109,20 +91,17 @@ public class DatabaseManager implements DBConstants
         return treeCuts;
     }
 
-    public Summary getDaySummary()
-    {
+    public Summary getDaySummary() {
         Summary daySummary = new Summary();
 
         Cursor cursor = database.query(true, TABLE_TREE_CUTS, null, null, null, null, null, null, null);
-        if(cursor.moveToFirst())
-        {
+        if (cursor.moveToFirst()) {
             daySummary.setNoOfCuts(cursor.getCount());
         }
         cursor.close();
 
-        cursor = database.rawQuery("SELECT SUM("+CUT_VOLUME+") FROM "+TABLE_TREE_CUTS, null);
-        if(cursor.moveToFirst())
-        {
+        cursor = database.rawQuery("SELECT SUM(" + CUT_VOLUME + ") FROM " + TABLE_TREE_CUTS, null);
+        if (cursor.moveToFirst()) {
             daySummary.setTotalVolume(cursor.getInt(0));
         }
         cursor.close();
@@ -130,13 +109,11 @@ public class DatabaseManager implements DBConstants
         return daySummary;
     }
 
-    public boolean removeCut(Cut cut)
-    {
-        return database.delete(TABLE_TREE_CUTS, CUT_ID+" = ?",new String[]{String.valueOf(cut.getId())}) == 1;
+    public void removeCut(Cut cut) {
+        database.delete(TABLE_TREE_CUTS, CUT_ID + " = ?", new String[]{String.valueOf(cut.getId())});
     }
 
-    public boolean removeAllCuts() throws SQLException
-    {
+    public boolean removeAllCuts() throws SQLException {
         return database.delete(TABLE_TREE_CUTS, null, null) != 0;
     }
 }

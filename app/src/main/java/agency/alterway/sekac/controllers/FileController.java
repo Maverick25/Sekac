@@ -1,5 +1,6 @@
 package agency.alterway.sekac.controllers;
 
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -34,42 +35,33 @@ import au.com.bytecode.opencsv.CSVReader;
 import au.com.bytecode.opencsv.CSVWriter;
 
 /**
- *
- *
  * Created by marekrigan on 13/03/16.
  */
-public class FileController
-{
-    private static final String ACCESS_TOKEN = "fNc4d-V-YqAAAAAAAAAAB4G47WrBk1u949MIGUZa1cYpuRMz3zfqHkJ1qGhn3S4H";
+public class FileController {
+    private static final String ACCESS_TOKEN = "FjfD2Q141IAAAAAAAAAAC8T1RnH7tMQhcu1nIX2uXKU7uov8oDKKt-9FdE_J6lq5";
     private static FileController instance;
     private static Injection injection;
     private DbxClientV2 client;
 
-    private FileController(Injection injection)
-    {
+    private FileController(Injection injection) {
         FileController.injection = injection;
 
         // Create Dropbox client
         DbxRequestConfig config = new DbxRequestConfig("dropbox/java-tutorial", "en_US");
-         client = new DbxClientV2(config, ACCESS_TOKEN);
+        client = new DbxClientV2(config, ACCESS_TOKEN);
     }
 
-    public static FileController getInstance(Injection injection)
-    {
-        if (instance == null)
-        {
+    public static FileController getInstance(Injection injection) {
+        if (instance == null) {
             instance = new FileController(injection);
-        }
-        else
-        {
+        } else {
             FileController.injection = injection;
         }
 
         return instance;
     }
 
-    private File convertToXLS(String filename, String path, File exportDir) throws IOException
-    {
+    private File convertToXLS(String filename, String path, File exportDir) throws IOException {
         Workbook wb = new HSSFWorkbook();
         CreationHelper helper = wb.getCreationHelper();
         Sheet sheet = wb.createSheet("Sekáč Tabuľka");
@@ -87,7 +79,7 @@ public class FileController
         }
 
         // Write the output to a file
-        File excelFile = new File(exportDir, filename+".xls");
+        File excelFile = new File(exportDir, filename + ".xls");
         FileOutputStream fileOut = new FileOutputStream(excelFile);
         wb.write(fileOut);
         fileOut.close();
@@ -95,19 +87,16 @@ public class FileController
         return excelFile;
     }
 
-    public void exportToDisk(boolean isFinishingDay, Date selectedDate, List<Cut> treeCuts, Summary summary)
-    {
+    public void exportToDisk(boolean isFinishingDay, Date selectedDate, List<Cut> treeCuts, Summary summary) {
         File exportDir = new File(Environment.getExternalStorageDirectory(), "sekac_poznamky");
 
-        if (!exportDir.exists() && !exportDir.mkdirs())
-        {
+        if (!exportDir.exists() && !exportDir.mkdirs()) {
             injection.onUploadedSheet(false, "Súbor nie je dostupný", isFinishingDay);
         }
 
-        try
-        {
+        try {
             String filename = "sekac_" + DateHandler.fileFormatter.format(selectedDate);
-            File file = new File(exportDir.getAbsolutePath()+"/"+filename + ".csv");
+            File file = new File(exportDir.getAbsolutePath() + "/" + filename + ".csv");
 
             CSVWriter writer = new CSVWriter(new FileWriter(file));
 
@@ -115,12 +104,11 @@ public class FileController
             data.add(new String[]{DateHandler.formatter.format(selectedDate)});
 
 //                data.add(new String[]{"Číslo","Dĺžka","Šírka","Kubíky"});
-            data.add(new String[]{"Cislo","Dlzka","Sirka","Kubiky"});
+            data.add(new String[]{"Cislo", "Dlzka", "Sirka", "Kubiky"});
 
 
-            for (int i=1; i<= treeCuts.size(); i++)
-            {
-                int j = i-1;
+            for (int i = 1; i <= treeCuts.size(); i++) {
+                int j = i - 1;
                 data.add(new String[]
                         {
                                 String.valueOf(i),
@@ -135,7 +123,7 @@ public class FileController
             data.add(new String[]
                     {
 //                                "", "Počet", "Spolu Kubíky","Spolu Hmota"
-                            "", "Pocet", "Kubiky","Hmota"
+                            "", "Pocet", "Kubiky", "Hmota"
                     });
 
             data.add(new String[]
@@ -151,48 +139,38 @@ public class FileController
 
             DropboxUploader uploader = new DropboxUploader(isFinishingDay);
             uploader.execute(excelFile);
-        }
-        catch (Exception sqlEx)
-        {
+        } catch (Exception sqlEx) {
             sqlEx.printStackTrace();
             Log.e("MainActivity", sqlEx.getMessage(), sqlEx);
-            injection.onUploadedSheet(false, "Niekde sa stala chyba",isFinishingDay);
+            injection.onUploadedSheet(false, "Niekde sa stala chyba", isFinishingDay);
         }
     }
 
 
-    private class DropboxUploader extends AsyncTask<File, Void, Boolean>
-    {
+    @SuppressLint("StaticFieldLeak")
+    private class DropboxUploader extends AsyncTask<File, Void, Boolean> {
         private boolean isFinishingDay;
 
-        public DropboxUploader(boolean isFinishingDay)
-        {
+        DropboxUploader(boolean isFinishingDay) {
             this.isFinishingDay = isFinishingDay;
         }
 
         @Override
-        protected Boolean doInBackground(File... params)
-        {
-            try
-            {
+        protected Boolean doInBackground(File... params) {
+            try {
                 File excelFile = params[0];
 
-                try
-                {
+                try {
                     client.files().delete("/" + excelFile.getName());
-                }
-                catch (DeleteErrorException | NoSuchMethodError e)
-                {
+                } catch (DeleteErrorException | NoSuchMethodError e) {
                     e.printStackTrace();
                 }
 
                 InputStream in = new FileInputStream(excelFile.getAbsolutePath());
-                client.files().uploadBuilder("/"+excelFile.getName()).uploadAndFinish(in);
+                client.files().uploadBuilder("/" + excelFile.getName()).uploadAndFinish(in);
 
                 return true;
-            }
-            catch (DbxException | IOException e)
-            {
+            } catch (DbxException | IOException e) {
                 e.printStackTrace();
 
                 return false;
@@ -200,14 +178,10 @@ public class FileController
         }
 
         @Override
-        protected void onPostExecute(Boolean success)
-        {
-            if(success)
-            {
+        protected void onPostExecute(Boolean success) {
+            if (success) {
                 injection.onUploadedSheet(true, "Súbor bol úspešne vytvorený", isFinishingDay);
-            }
-            else
-            {
+            } else {
                 injection.onUploadedSheet(false, "Súbor bol úspešne vytvorený na telefóne ale chyba nastala pri uložení do Dropboxu", isFinishingDay);
             }
         }

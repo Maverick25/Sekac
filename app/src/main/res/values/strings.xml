@@ -4,6 +4,9 @@
     <string name="count">počet</string>
     <string name="height">dĺžka</string>
     <string name="width">šírka</string>
+    <string name="volume">objem</string>
+    <string name="height_short">d</string>
+    <string name="width_short">š</string>
     <string name="volume_ov">kubíkov</string>
     <string name="volume_ky">kubíky</string>
     <string name="add">Pridaj</string>
@@ -25,6 +28,6 @@
     <string name="sure_to_finish_day">Ukončením dňa sa vymažú všetky poznámky z aplikácie a vytvorí sa CSV súbor na telefóne a aj na Dropboxe. Ste si istý?</string>
     <string name="hooray_to_a_new_day">Deň bol úspešne ukončený. A teraz hurá do nového dňa!</string>
     <string name="das_ist_hruza">Das Ist Hrúza!</string>
-    <string name="volume">objem</string>
+
 
 </resources>

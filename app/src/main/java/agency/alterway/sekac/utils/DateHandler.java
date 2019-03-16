@@ -5,11 +5,10 @@ import java.util.Locale;
 
 /**
  * Date Formatters
- *
+ * <p>
  * Created by marekrigan on 13/03/16.
  */
-public interface DateHandler
-{
+public interface DateHandler {
     SimpleDateFormat formatter = new SimpleDateFormat("dd. MMMM yyyy", Locale.getDefault());
     SimpleDateFormat fileFormatter = new SimpleDateFormat("dd_MM_yyyy", Locale.getDefault());
 }

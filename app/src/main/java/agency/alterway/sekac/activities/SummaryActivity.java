@@ -1,11 +1,8 @@
 package agency.alterway.sekac.activities;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
@@ -22,38 +19,35 @@ import agency.alterway.sekac.injections.Injection;
 import agency.alterway.sekac.models.Cut;
 import agency.alterway.sekac.models.Summary;
 import agency.alterway.sekac.utils.DateHandler;
-import butterknife.Bind;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SummaryActivity extends AppCompatActivity implements Injection
-{
-    @Bind(R.id.button_dateChange)
-    Button   dateChangeButton;
-    @Bind(R.id.text_totalCount)
+public class SummaryActivity extends AppCompatActivity implements Injection {
+    @BindView(R.id.button_dateChange)
+    Button dateChangeButton;
+    @BindView(R.id.text_totalCount)
     TextView totalCountLabel;
-    @Bind(R.id.text_totalMatter)
+    @BindView(R.id.text_totalMatter)
     TextView totalMatterLabel;
-    @Bind(R.id.text_totalVolume)
+    @BindView(R.id.text_totalVolume)
     TextView totalVolumeLabel;
 
     private ProgressDialog progressDialog;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         ButterKnife.bind(this);
 
-        try
-        {
+        try {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -66,10 +60,8 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(resultCode == RESULT_OK && requestCode == getResources().getInteger(R.integer.calendar_request_code))
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && requestCode == getResources().getInteger(R.integer.calendar_request_code)) {
             String dateString = data.getStringExtra(getString(R.string.key_current_date));
 
             dateChangeButton.setText(dateString);
@@ -77,18 +69,15 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         finish();
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -97,8 +86,7 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         }
     }
 
-    private void showProgress()
-    {
+    private void showProgress() {
         // Show modal progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle(getString(R.string.saving_progress_title));
@@ -108,87 +96,59 @@ public class SummaryActivity extends AppCompatActivity implements Injection
         progressDialog.show();
     }
 
-    private void showFinishDialog()
-    {
+    private void showFinishDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(R.string.sure_to_finish_day)
                 .setCancelable(true)
-                .setPositiveButton(R.string.finish_day, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
+                .setPositiveButton(R.string.finish_day, (dialog12, which) -> {
+                    dialog12.dismiss();
 
-                        showProgress();
+                    showProgress();
 
-                        shareProgress(true);
-                    }
+                    shareProgress(true);
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(R.string.cancel, (dialog1, which) -> dialog1.dismiss())
                 .create();
 
         dialog.show();
     }
 
-    private void showNewDayDialog()
-    {
+    private void showNewDayDialog() {
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setMessage(R.string.hooray_to_a_new_day)
                 .setCancelable(true)
-                .setNeutralButton(R.string.das_ist_hruza, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        onBackPressed();
-                    }
-                })
+                .setNeutralButton(R.string.das_ist_hruza, (dialog1, which) -> onBackPressed())
                 .create();
 
         dialog.show();
     }
 
-    private void shareProgress(boolean isFinishingDay)
-    {
+    private void shareProgress(boolean isFinishingDay) {
         List<Cut> treeCuts = DatabaseManager.getInstance(this).getTreeCuts();
         Summary summary = DatabaseManager.getInstance(this).getDaySummary();
 
-        try
-        {
+        try {
             Date selectedDate = DateHandler.formatter.parse(dateChangeButton.getText().toString());
-            FileController.getInstance(this).exportToDisk(isFinishingDay, selectedDate,treeCuts, summary);
-        }
-        catch (ParseException e)
-        {
+            FileController.getInstance(this).exportToDisk(isFinishingDay, selectedDate, treeCuts, summary);
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     @OnClick(R.id.button_shareProgress)
-    void onSharedProgress()
-    {
+    void onSharedProgress() {
         showProgress();
 
         shareProgress(false);
     }
 
     @OnClick(R.id.button_finishDay)
-    void onFinishedDay()
-    {
+    void onFinishedDay() {
         showFinishDialog();
     }
 
     @OnClick(R.id.button_dateChange)
-    void onChangeDate(Button button)
-    {
+    void onChangeDate(Button button) {
         Intent goToDatePicker = new Intent(this, CalendarActivity.class);
         goToDatePicker.putExtra(getString(R.string.key_current_date), button.getText());
         startActivityForResult(goToDatePicker, getResources().getInteger(R.integer.calendar_request_code));
@@ -196,26 +156,18 @@ public class SummaryActivity extends AppCompatActivity implements Injection
     }
 
     @Override
-    public void onUploadedSheet(boolean success, String message, boolean isFinishingDay)
-    {
-        if(progressDialog!= null && progressDialog.isShowing())
-        {
+    public void onUploadedSheet(boolean success, String message, boolean isFinishingDay) {
+        if (progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
 
-        if (success)
-        {
-            if (isFinishingDay && DatabaseManager.getInstance(this).removeAllCuts())
-            {
+        if (success) {
+            if (isFinishingDay && DatabaseManager.getInstance(this).removeAllCuts()) {
                 showNewDayDialog();
-            }
-            else
-            {
+            } else {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
             }
-        }
-        else
-        {
+        } else {
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         }
     }

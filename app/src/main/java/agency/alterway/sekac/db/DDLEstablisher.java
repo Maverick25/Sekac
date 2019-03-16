@@ -7,35 +7,29 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * DDL for the Sekac Database
- *
+ * <p>
  * Created by marekrigan on 22/02/16.
  */
-public class DDLEstablisher extends SQLiteOpenHelper implements DBConstants
-{
-    public DDLEstablisher(Context context)
-    {
+public class DDLEstablisher extends SQLiteOpenHelper implements DBConstants {
+    DDLEstablisher(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void onCreate(SQLiteDatabase database)
-    {
+    public void onCreate(SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_TREE_CUTS);
         database.execSQL(CREATE_TABLE_PINE_TREE);
         fillPineTreeTable(database);
     }
 
-    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion)
-    {
-        database.execSQL("DROP TABLE IF EXISTS " +TABLE_TREE_CUTS);
-        database.execSQL("DROP TABLE IF EXISTS " +TABLE_PINE_TREE);
+    public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_TREE_CUTS);
+        database.execSQL("DROP TABLE IF EXISTS " + TABLE_PINE_TREE);
         onCreate(database);
     }
 
-    private void fillPineTreeTable(SQLiteDatabase database)
-    {
+    private void fillPineTreeTable(SQLiteDatabase database) {
         ContentValues values = new ContentValues();
-        try
-        {
+        try {
             int i = 3;
 
             values.put(HEIGHT, i);
@@ -77,7 +71,7 @@ public class DDLEstablisher extends SQLiteOpenHelper implements DBConstants
 
             database.insert(TABLE_PINE_TREE, null, values);
             i++;
-            
+
             values.put(HEIGHT, i);
             values.put(WIDTH10, 3);
             values.put(WIDTH11, 4);
@@ -955,9 +949,7 @@ public class DDLEstablisher extends SQLiteOpenHelper implements DBConstants
             values.put(WIDTH44, 346);
 
             database.insert(TABLE_PINE_TREE, null, values);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

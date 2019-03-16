@@ -1,6 +1,8 @@
 package agency.alterway.sekac.views.adapters;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,42 +18,34 @@ import agency.alterway.sekac.models.Cut;
 
 /**
  * Adapter class for all cut records saved
- *
+ * <p>
  * Created by marekrigan on 22/02/16.
  */
-public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder>
-{
+public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder> {
     private List<Cut> cutList;
     private ActivityCallback callback;
 
-    public CutAdapter(ActivityCallback callback, List<Cut> cutList)
-    {
+    public CutAdapter(ActivityCallback callback, List<Cut> cutList) {
         this.callback = callback;
         this.cutList = cutList;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_cut, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position)
-    {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Cut cut = cutList.get(position);
 
-        holder.deleteButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                DatabaseManager.getInstance(SekacApplication.getAppContext()).removeCut(cut);
-                cutList.remove(holder.getAdapterPosition());
-                notifyDataSetChanged();
-                callback.onRemovedCut(cutList.isEmpty());
-            }
+        holder.deleteButton.setOnClickListener(v -> {
+            DatabaseManager.getInstance(SekacApplication.getAppContext()).removeCut(cut);
+            cutList.remove(holder.getAdapterPosition());
+            notifyDataSetChanged();
+            callback.onRemovedCut(cutList.isEmpty());
         });
 
         holder.height.setText(cut.getFormattedHeight());
@@ -60,32 +54,28 @@ public class CutAdapter extends RecyclerView.Adapter<CutAdapter.ViewHolder>
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return cutList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder
-    {
-        public ImageButton deleteButton;
-        public TextView height;
-        public TextView width;
-        public TextView volume;
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageButton deleteButton;
+        TextView height;
+        TextView width;
+        TextView volume;
 
-        public ViewHolder(View itemView)
-        {
+        ViewHolder(View itemView) {
             super(itemView);
 
-            deleteButton = (ImageButton) itemView.findViewById(R.id.imgButton_remove);
-            height = (TextView) itemView.findViewById(R.id.text_heightValue);
-            width = (TextView) itemView.findViewById(R.id.text_widthValue);
-            volume = (TextView) itemView.findViewById(R.id.text_volumeValue);
+            deleteButton = itemView.findViewById(R.id.imgButton_remove);
+            height = itemView.findViewById(R.id.text_heightValue);
+            width = itemView.findViewById(R.id.text_widthValue);
+            volume = itemView.findViewById(R.id.text_volumeValue);
         }
 
     }
 
-    public interface ActivityCallback
-    {
+    public interface ActivityCallback {
         void onRemovedCut(boolean isEmpty);
     }
 }

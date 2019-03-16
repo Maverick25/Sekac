@@ -2,7 +2,9 @@ package agency.alterway.sekac.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.MenuItem;
 import android.widget.DatePicker;
 
@@ -12,21 +14,18 @@ import java.util.Date;
 
 import agency.alterway.sekac.R;
 import agency.alterway.sekac.utils.DateHandler;
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class CalendarActivity extends AppCompatActivity
-{
+public class CalendarActivity extends AppCompatActivity {
     private Calendar calendar;
 
-    @Bind(R.id.datePicker_summary)
+    @BindView(R.id.datePicker_summary)
     DatePicker datePicker;
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
         ButterKnife.bind(this);
@@ -35,42 +34,33 @@ public class CalendarActivity extends AppCompatActivity
 
         String dateString = getIntent().getStringExtra(getString(R.string.key_current_date));
 
-        if (dateString != null)
-        {
-            try
-            {
+        if (dateString != null) {
+            try {
                 Date currentDate = DateHandler.formatter.parse(dateString);
                 calendar.setTime(currentDate);
 
                 datePicker.updateDate(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-            }
-            catch (ParseException e)
-            {
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
 
-        try
-        {
+        try {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
-        }
-        catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
     }
 
     @OnClick(R.id.button_cancel)
-    void onCancel()
-    {
+    void onCancel() {
         goBack();
     }
 
     @OnClick(R.id.button_saveDate)
-    void onSavedDate()
-    {
+    void onSavedDate() {
         calendar.set(Calendar.YEAR, datePicker.getYear());
         calendar.set(Calendar.MONTH, datePicker.getMonth());
         calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
@@ -83,17 +73,14 @@ public class CalendarActivity extends AppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         super.onBackPressed();
         goBack();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -102,8 +89,7 @@ public class CalendarActivity extends AppCompatActivity
         }
     }
 
-    private void goBack()
-    {
+    private void goBack() {
         finish();
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
     }
